@@ -1,0 +1,9 @@
+# azure_roles/sre-team.yaml (Observability & Patching)
+name: "SRE-Team-Azure"
+description: "Focus on Maintenance Windows and Insights"
+actions:
+  - "Microsoft.Insights/*"
+  - "Microsoft.Maintenance/maintenanceConfigurations/read"
+  - "Microsoft.Maintenance/applyUpdates/write"
+  - "Microsoft.Compute/virtualMachines/instanceView/read"
+  - "Microsoft.Support/*"

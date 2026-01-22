@@ -1,0 +1,13 @@
+# azure_roles/devops-ext-l2.yaml (Junior External - Ops Only)
+name: "DevOps-External-L2"
+description: "Operational access: Start, Stop, and Monitoring only"
+actions:
+  - "Microsoft.Compute/virtualMachines/read"
+  - "Microsoft.Compute/virtualMachines/start/action"
+  - "Microsoft.Compute/virtualMachines/stop/action"
+  - "Microsoft.App/containerApps/read"
+  - "Microsoft.Storage/storageAccounts/read"
+  - "Microsoft.Insights/alertRules/*"
+notActions:
+  - "*/write"
+  - "*/delete"

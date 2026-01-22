@@ -1,0 +1,43 @@
+{
+  "Statement": [
+    {
+      "Sid": "EC2ManagementNoDelete",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:CreateVolume",
+        "ec2:AttachVolume"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "RDSManagementNoDelete",
+      "Effect": "Allow",
+      "Action": [
+        "rds:ModifyDBInstance",
+        "rds:StartDBInstance",
+        "rds:StopDBInstance",
+        "rds:RebootDBInstance",
+        "rds:CreateDBSnapshot"
+      ],
+      "Resource": "arn:aws:rds:*:*:db:*"
+    },
+    {
+      "Sid": "S3AppStorage",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::customer-app-data",
+        "arn:aws:s3:::customer-app-data/*"
+      ]
+    }
+  ]
+}

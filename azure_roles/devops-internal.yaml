@@ -1,0 +1,28 @@
+# azure_roles/devops-internal.yaml
+name: "DevOps-Internal-Master"
+description: "Full management across APIM, Container Apps, VMs, and Storage"
+actions:
+  # Compute & Fleet
+  - "Microsoft.Compute/virtualMachines/*"
+  - "Microsoft.Compute/disks/*"
+  - "Microsoft.Compute/availabilitySets/*"
+
+  # Container Apps & Modern Apps
+  - "Microsoft.App/containerApps/*"
+  - "Microsoft.App/managedEnvironments/*"
+
+  # API Management
+  - "Microsoft.ApiManagement/service/*"
+
+  # Storage & Data
+  - "Microsoft.Storage/storageAccounts/*"
+
+  # Maintenance & Governance
+  - "Microsoft.Maintenance/maintenanceConfigurations/*"
+  - "Microsoft.Maintenance/applyUpdates/*"
+  - "Microsoft.Resources/subscriptions/resourceGroups/*"
+
+  # IAM Control
+  - "Microsoft.Authorization/roleAssignments/*"
+  - "Microsoft.Authorization/roleDefinitions/*"
+notActions: []

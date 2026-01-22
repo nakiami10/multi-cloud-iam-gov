@@ -1,0 +1,16 @@
+# azure_roles/devops-ext-l1.yaml (Senior External - No Delete)
+name: "DevOps-External-L1"
+description: "Full configuration rights excluding deletion"
+actions:
+  - "Microsoft.Compute/virtualMachines/read"
+  - "Microsoft.Compute/virtualMachines/write"
+  - "Microsoft.Compute/virtualMachines/start/action"
+  - "Microsoft.Compute/virtualMachines/restart/action"
+  - "Microsoft.App/containerApps/read"
+  - "Microsoft.App/containerApps/write"
+  - "Microsoft.ApiManagement/service/read"
+  - "Microsoft.ApiManagement/service/write"
+  - "Microsoft.Storage/storageAccounts/read"
+  - "Microsoft.Storage/storageAccounts/write"
+notActions:
+  - "*/delete"

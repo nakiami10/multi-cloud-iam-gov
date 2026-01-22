@@ -1,0 +1,15 @@
+{
+  "Statement": [
+    {
+      "Sid": "SSMCoreCommunication",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetDeployablePatchSnapshotForInstance",
+        "ssm:ListAssociations",
+        "ssm:UpdateInstanceInformation"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
