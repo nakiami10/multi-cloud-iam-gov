@@ -1,0 +1,8 @@
+# Essential for UI navigation across all teams
+actions:
+  - "Microsoft.Resources/subscriptions/resourceGroups/read"
+  - "Microsoft.Resources/subscriptions/locations/read"
+  - "Microsoft.Resources/tags/read"
+  - "Microsoft.Authorization/policyAssignments/read"
+  - "Microsoft.Authorization/policyDefinitions/read"
+  - "Microsoft.ResourceGraph/resources/read"

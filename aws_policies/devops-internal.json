@@ -66,6 +66,20 @@
       "Resource": "*"
     },
     {
+      "Sid": "FullComputeManagement",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:TerminateInstances",
+        "ec2:StopInstances",
+        "ec2:StartInstances",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:CreateNetworkInterface",
+        "ec2:AttachNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
       "Sid": "ELBManagement",
       "Effect": "Allow",
       "Action": [
@@ -106,9 +120,18 @@
         "iam:GetRole",
         "iam:ListRoles",
         "iam:GetPolicy",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:PutRolePolicy",
+        "iam:AttachRolePolicy",
+        "iam:PassRole",
+        "iam:CreateUser",
+        "iam:UpdateUser",
+        "iam:DeleteUser",
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey",
         "iam:ListAttachedRolePolicies",
         "iam:CreateServiceLinkedRole",
-        "iam:PassRole",
         "iam:PutRolePolicy",
         "iam:DeleteRolePolicy",
         "iam:AttachRolePolicy",

@@ -1,0 +1,28 @@
+{
+  "Statement": [
+    {
+      "Sid": "AccountMetadataDiscovery",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccountSummary",
+        "iam:GetAccountPasswordPolicy",
+        "iam:ListAccountAliases",
+        "iam:GetUser",
+        "iam:ListGroupsForUser",
+        "servicequotas:GetServiceQuota",
+        "servicequotas:ListServiceQuotas"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "RegionalDiscovery",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeRegions",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeVpcs"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

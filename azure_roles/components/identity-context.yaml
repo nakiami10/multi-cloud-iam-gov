@@ -1,0 +1,4 @@
+actions:
+  - "Microsoft.Directory/users/read"
+  - "Microsoft.Directory/groups/read"
+  - "Microsoft.Graph/me/read"
