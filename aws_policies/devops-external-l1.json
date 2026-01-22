@@ -8,7 +8,7 @@
         "ec2:StopInstances",
         "ec2:DescribeInstances"
       ],
-      "Resource": "arn:aws:ec2:*:*:instance/*"
+      "Resource": "*"
     },
     {
       "Sid": "SSMRemoteCommand",

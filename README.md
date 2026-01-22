@@ -97,7 +97,7 @@ The framework uses an **Additive Inheritance Model** to enforce separation of du
 
 ---
 
-### Tag-Based Access Control (TBAC)
+### Tag-Based Access Control (TBAC/ Tentative Implementation)
 
 - External contractor permissions are **pinned to resource tags**
 - Even with stop permissions, actions are denied unless the resource carries the correct **Clearance tag**

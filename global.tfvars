@@ -1,44 +1,64 @@
-# --- Azure Environment Separation ---
-# It is recommended to separate these so you can apply different 
-# levels of "leeway" per environment type.
+# --- ENVIRONMENT SETTINGS ---
+environment              = "production"
+enable_strict_governance = true
 
+# --- AZURE SUBSCRIPTIONS ---
+# Production subscriptions receive strict custom roles
 prod_subscription_ids = [
-  "00000000-0000-0000-0000-000000000000" # Production (Strict Lockdown)
+  "00000000-0000-0000-0000-000000000000"
 ]
 
+# Non-production subscriptions receive built-in Contributor roles (leeway)
 nonprod_subscription_ids = [
-  "11111111-1111-1111-1111-111111111111", # Development
-  "22222222-2222-2222-2222-222222222222"  # Staging/Sandbox
+  "11111111-1111-1111-1111-111111111111",
+  "22222222-2222-2222-2222-222222222222"
 ]
 
-# --- AWS Team Assignments ---
-# Maps the filenames in /aws_policies to specific IAM entities.
-# Note: You can also create separate maps for 'prod_assignments' 
-# and 'nonprod_assignments' if users differ across accounts.
+# --- AZURE IDENTITY MAPPINGS ---
+# Map specific Entra ID Principal IDs to teams across various subscriptions
+azure_team_principals = [
+  {
+    team            = "devops-ext-l1"
+    subscription_id = "00000000-0000-0000-0000-000000000000" # Prod
+    principal_id    = "55555555-5555-5555-5555-555555555555"
+  },
+  {
+    team            = "devops-ext-l1"
+    subscription_id = "11111111-1111-1111-1111-111111111111" # Non-Prod
+    principal_id    = "55555555-5555-5555-5555-555555555555"
+  },
+  {
+    team            = "sre-team"
+    subscription_id = "00000000-0000-0000-0000-000000000000"
+    principal_id    = "99999999-9999-9999-9999-999999999999"
+  }
+]
 
+# --- AWS IDENTITY ASSIGNMENTS ---
+# These mappings correspond to the JSON filenames in /aws_policies
 team_assignments = {
   "devops-internal" = {
-    iam_users  = ["Khirmer.Dia", "admin.user"]
+    iam_users  = ["Khirmer.Dia"]
     iam_groups = ["Admins"]
-  },
+  }
   "devops-ext-l1" = {
-    iam_users  = ["external-senior-contractor"]
-    iam_groups = ["External-Senior-Ops"]
-  },
+    iam_users  = ["contractor-senior-01"]
+    iam_groups = ["External-L1"]
+  }
   "devops-ext-l2" = {
-    iam_users  = ["external-junior-contractor"]
-    iam_groups = ["External-Junior-Ops"]
-  },
+    iam_users  = ["contractor-junior-01"]
+    iam_groups = ["External-L2"]
+  }
   "sre-team" = {
-    iam_users  = ["sre.engineer"]
+    iam_users  = ["sre-lead-01"]
     iam_groups = ["SRE-Team"]
-  },
+  }
   "dev-team" = {
     iam_users  = []
-    iam_groups = ["Application-Developers"]
-  },
+    iam_groups = ["Developers"]
+  }
   "cicd-service-account" = {
-    iam_users  = ["github-actions-user"]
-    iam_groups = ["Service-Accounts"]
+    iam_users  = ["cicd-pipeline-user"]
+    iam_groups = ["ServiceAccounts"]
   }
 }

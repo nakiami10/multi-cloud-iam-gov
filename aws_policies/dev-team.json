@@ -11,7 +11,12 @@
       "Sid": "DevRDSAccess",
       "Effect": "Allow",
       "Action": ["rds:DescribeDBInstances", "rds:RebootDBInstance"],
-      "Resource": "arn:aws:rds:*:*:db:dev-*"
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:ResourceTag/EnvironmentName": "prod"
+        }
+      }
     }
   ]
 }
