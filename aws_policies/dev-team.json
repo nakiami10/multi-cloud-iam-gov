@@ -5,22 +5,13 @@
       "Sid": "DevS3Access",
       "Effect": "Allow",
       "Action": ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
-      "Resource": [
-        "arn:aws:s3:::dev-assets-bucket",
-        "arn:aws:s3:::dev-assets-bucket/*"
-      ]
+      "Resource": ["arn:aws:s3:::dev-assets/*"]
     },
     {
-      "Sid": "DevParameterStore",
+      "Sid": "DevRDSAccess",
       "Effect": "Allow",
-      "Action": ["ssm:GetParametersByPath", "ssm:GetParameter"],
-      "Resource": "arn:aws:ssm:*:*:parameter/dev/app/*"
-    },
-    {
-      "Sid": "CloudWatchLogPush",
-      "Effect": "Allow",
-      "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
-      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/dev-app-*"
+      "Action": ["rds:DescribeDBInstances", "rds:RebootDBInstance"],
+      "Resource": "arn:aws:rds:*:*:db:dev-*"
     }
   ]
 }

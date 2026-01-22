@@ -1,11 +1,8 @@
 # azure_roles/dev-team.yaml (App Scoped)
 name: "Dev-Team-Azure"
-description: "Application development access to Container Apps and Storage"
 actions:
   - "Microsoft.App/containerApps/read"
   - "Microsoft.App/containerApps/write"
-  - "Microsoft.App/containerApps/revisions/*"
   - "Microsoft.Storage/storageAccounts/blobServices/containers/read"
-  - "Microsoft.Storage/storageAccounts/blobServices/containers/write"
 notActions:
   - "*/delete"

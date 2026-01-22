@@ -1,0 +1,7 @@
+# Shared actions for SRE and DevOps External teams
+actions:
+  - "Microsoft.Maintenance/maintenanceConfigurations/read"
+  - "Microsoft.Maintenance/applyUpdates/read"
+  - "Microsoft.Maintenance/applyUpdates/write"
+  - "Microsoft.Compute/virtualMachines/instanceView/read"
+  - "Microsoft.Compute/virtualMachines/extension/read"

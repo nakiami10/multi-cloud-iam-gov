@@ -7,7 +7,20 @@
         "ssm:DescribeInstanceInformation",
         "ssm:GetDeployablePatchSnapshotForInstance",
         "ssm:ListAssociations",
-        "ssm:UpdateInstanceInformation"
+        "ssm:UpdateInstanceInformation",
+        "ssm:ListInstanceAssociations",
+        "ssm:PutInventory"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "SSMMessages",
+      "Effect": "Allow",
+      "Action": [
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
       ],
       "Resource": "*"
     }

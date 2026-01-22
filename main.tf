@@ -1,33 +1,40 @@
 # --- 1. PROVIDERS ---
-provider "aws" { region = "us-east-1" }
-provider "azurerm" { features {} }
 
-# --- 2. AWS COMPOSITION LOGIC ---
+provider "aws" {
+  region = "us-east-1"
+}
+
+provider "azurerm" {
+  features {}
+}
+
+# --- 2. AWS COMPOSITION ENGINE ---
+
 locals {
-  # Load Base Components
-  base_monitoring = jsondecode(file("${path.module}/aws_policies/components/base-monitoring.json"))
-  base_ssm        = jsondecode(file("${path.module}/aws_policies/components/ssm-inventory.json"))
+  # Dynamically load all AWS shared component statements from the components folder
+  aws_component_files = fileset("${path.module}/aws_policies/components", "*.json")
   
-  # Find Team Policy Files (ignores /components subfolder automatically)
+  # Flatten all statements into a single list for merging
+  aws_shared_statements = flatten([
+    for f in local.aws_component_files : jsondecode(file("${path.module}/aws_policies/components/${f}")).Statement
+  ])
+  
+  # Find all team-specific policy files at the root of /aws_policies
   aws_team_files = fileset("${path.module}/aws_policies", "*.json")
   
-  # Composition Engine
+  # Composition Logic:
+  # If the file is "devops-internal.json", use it raw (unrestricted).
+  # Otherwise, concatenate the shared statements with the team-specific ones.
   aws_final_policies = {
     for f in local.aws_team_files :
     replace(f, ".json", "") => {
       Version = "2012-10-17"
-      Statement = f == "devops-internal.json" ? 
-        jsondecode(file("${path.module}/aws_policies/${f}")).Statement : 
-        concat(
-          local.base_monitoring.Statement,
-          local.base_ssm.Statement,
-          jsondecode(file("${path.module}/aws_policies/${f}")).Statement
-        )
+      Statement = f == "devops-internal.json" ? jsondecode(file("${path.module}/aws_policies/${f}")).Statement : concat(local.aws_shared_statements, jsondecode(file("${path.module}/aws_policies/${f}")).Statement)
     }
   }
 }
 
-# Create Composed Policies
+# Create the composed IAM policies in AWS
 resource "aws_iam_policy" "composed" {
   for_each = local.aws_final_policies
   name     = "iam-composed-${each.key}"
@@ -35,7 +42,7 @@ resource "aws_iam_policy" "composed" {
   policy   = jsonencode(each.value)
 }
 
-# Attach to Groups (Linked to variables.tf mapping)
+# Attach policies to groups based on the mapping in variables.tf
 resource "aws_iam_group_policy_attachment" "automated_attach" {
   for_each = {
     for team, assignment in var.team_assignments : team => assignment
@@ -46,22 +53,40 @@ resource "aws_iam_group_policy_attachment" "automated_attach" {
   policy_arn = aws_iam_policy.composed[each.key].arn
 }
 
-# --- 3. AZURE RBAC LOGIC ---
+# --- 3. AZURE COMPOSITION ENGINE ---
+
 locals {
+  # Dynamically ingest ALL Azure shared components
+  az_component_files = fileset("${path.module}/azure_roles/components", "*.yaml")
+  
+  az_shared_actions = flatten([
+    for f in local.az_component_files : yamldecode(file("${path.module}/azure_roles/components/${f}")).actions
+  ])
+  
   az_role_files = fileset("${path.module}/azure_roles", "*.yaml")
+  
+  # Combine all subscription IDs for assignable_scopes
+  all_azure_subs = concat(var.prod_subscription_ids, var.nonprod_subscription_ids)
 }
 
+# Create Custom Role Definitions in Azure
 resource "azurerm_role_definition" "teams" {
   for_each = { for f in local.az_role_files : replace(f, ".yaml", "") => yamldecode(file("${path.module}/azure_roles/${f}")) }
   
   name  = "Custom-${each.value.name}"
-  # Fixed variable naming consistency
-  scope = "/subscriptions/${var.subscription_id}"
+  
+  # Define the role at the scope of the primary production subscription
+  scope = "/subscriptions/${var.prod_subscription_ids[0]}"
 
   permissions {
-    actions     = each.value.actions
+    # Merge shared actions with team-specific actions
+    actions = distinct(concat(
+      local.az_shared_actions,
+      each.value.actions
+    ))
     not_actions = lookup(each.value, "notActions", [])
   }
 
-  assignable_scopes = ["/subscriptions/${var.subscription_id}"]
+  # Make the role assignable across both Prod and Non-Prod environments
+  assignable_scopes = [for id in local.all_azure_subs : "/subscriptions/${id}"]
 }

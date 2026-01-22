@@ -1,7 +1,7 @@
 {
   "Statement": [
     {
-      "Sid": "DatadogAndCloudWatchMetrics",
+      "Sid": "StandardObservability",
       "Effect": "Allow",
       "Action": [
         "cloudwatch:GetMetricData",
@@ -11,6 +11,16 @@
         "logs:DescribeLogStreams",
         "logs:GetLogEvents",
         "logs:FilterLogEvents"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DatadogDiscovery",
+      "Effect": "Allow",
+      "Action": [
+        "tag:GetResources",
+        "ec2:DescribeTags",
+        "rds:ListTagsForResource"
       ],
       "Resource": "*"
     }

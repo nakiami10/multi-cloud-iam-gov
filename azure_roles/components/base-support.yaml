@@ -1,0 +1,8 @@
+# Every team gets these shared support actions automatically
+actions:
+  - "Microsoft.Insights/metrics/read"
+  - "Microsoft.Insights/logDefinitions/read"
+  - "Microsoft.Insights/diagnosticSettings/read"
+  - "Microsoft.Support/*"
+  - "Microsoft.Resources/subscriptions/resourceGroups/read"
+  - "Microsoft.Resources/deployments/read"
