@@ -7,7 +7,7 @@ variable "environment" {
 
 variable "enable_strict_governance" {
   description = "If true, injects restrictive shared components (PassRole locks, etc.). Set to false for Non-Prod leeway."
-  type        = boolean
+  type        = bool
   default     = true
 }
 

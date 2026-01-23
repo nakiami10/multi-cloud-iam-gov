@@ -5,11 +5,39 @@
       "Effect": "Allow",
       "Action": [
         "ec2:RunInstances",
-        "ec2:StartInstances",
+        "ec2:TerminateInstances",
         "ec2:StopInstances",
+        "ec2:StartInstances",
         "ec2:ModifyInstanceAttribute",
-        "ec2:CreateVolume",
-        "ec2:AttachVolume"
+        "ec2:DescribeInstances",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:CreateNetworkInterface",
+        "ec2:AttachNetworkInterface",
+        "ec2:CreateVpc",
+        "ec2:CreateSubnet",
+        "ec2:CreateSecurityGroup",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:CreateRoute",
+        "ec2:CreateInternetGateway",
+        "ec2:AttachInternetGateway"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "RDSManagement",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "rds:ModifyDBInstance",
+        "rds:DescribeDBInstances",
+        "rds:RebootDBInstance",
+        "rds:CreateDBSnapshot",
+        "rds:DescribeDBSnapshots",
+        "rds:ModifyDBSubnetGroup"
       ],
       "Resource": "*"
     },
@@ -29,10 +57,22 @@
       "Sid": "S3AppStorage",
       "Effect": "Allow",
       "Action": [
+        "s3:CreateBucket",
+        "s3:ListAllMyBuckets",
+        "s3:GetBucketLocation",
+        "s3:ListBucket",
         "s3:PutObject",
         "s3:GetObject",
-        "s3:ListBucket",
-        "s3:GetBucketLocation"
+        "s3:DeleteObject",
+        "s3:PutBucketVersioning",
+        "s3:GetEncryptionConfiguration",
+        "s3:PutEncryptionConfiguration",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:PutBucketWebsite",
+        "s3:GetBucketWebsite",
+        "s3:PutBucketTagging",
+        "s3:GetBucketTagging"
       ],
       "Resource": [
         "arn:aws:s3:::customer-app-data",

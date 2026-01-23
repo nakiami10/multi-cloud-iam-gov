@@ -8,6 +8,33 @@ provider "azurerm" {
   features {}
 }
 
+terraform {
+  # --- OPTION A: AWS S3 (Recommended if AWS is your primary hub) ---
+  # Requires: S3 Bucket (versioning enabled) and DynamoDB Table (LockID primary key)
+  
+  /*
+  backend "s3" {
+    bucket         = "customer-terraform-state-prod"
+    key            = "iam-governance/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+  }
+  */
+
+  # --- OPTION B: Azure Blob Storage (Recommended if Azure is your primary hub) ---
+  # Requires: Storage Account and Container
+  
+  
+  backend "azurerm" {
+    resource_group_name  = "rg-governance-prod"
+    storage_account_name = "stcustomertfstateprod"
+    container_name       = "tfstate"
+    key                  = "iam.terraform.tfstate"
+  }
+  
+}
+
 # --- 2. AWS COMPOSITION ENGINE (Environment Aware) ---
 
 locals {
