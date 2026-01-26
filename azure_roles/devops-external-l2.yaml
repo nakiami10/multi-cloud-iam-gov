@@ -1,16 +1,61 @@
-# azure_roles/devops-ext-l1.yaml (Senior External - No Delete)
-name: "DevOps-External-L1"
-description: "Full configuration rights excluding deletion"
+# --- SENIOR (L2) ELEVATED ROLE DEFINITION ---
+# Focus: Full provisioning, configuration, and destruction rights.
+# Logic: Inherits L1 (Junior) triage actions via the Terraform stitching engine.
+# Safety: Delete actions are included but should be gated via Azure PIM to mirror the AWS MFA requirement.
+
+name: "DevOps-External-L2"
+description: "Senior Contractor: Ultra-granular provisioning and destruction rights across Azure services."
+
 actions:
-  - "Microsoft.Compute/virtualMachines/read"
+  # 1. Compute & Networking (EC2 / ELB / ASG Equivalent)
   - "Microsoft.Compute/virtualMachines/write"
-  - "Microsoft.Compute/virtualMachines/start/action"
-  - "Microsoft.Compute/virtualMachines/restart/action"
-  - "Microsoft.App/containerApps/read"
-  - "Microsoft.App/containerApps/write"
-  - "Microsoft.ApiManagement/service/read"
-  - "Microsoft.ApiManagement/service/write"
-  - "Microsoft.Storage/storageAccounts/read"
+  - "Microsoft.Compute/virtualMachines/delete"
+  - "Microsoft.Compute/virtualMachineScaleSets/write"
+  - "Microsoft.Compute/virtualMachineScaleSets/delete"
+  - "Microsoft.Network/loadBalancers/write"
+  - "Microsoft.Network/loadBalancers/delete"
+  - "Microsoft.Network/networkInterfaces/write"
+  - "Microsoft.Network/networkInterfaces/delete"
+
+  # 2. Data & Storage (RDS / S3 / DynamoDB Equivalent)
+  - "Microsoft.Sql/servers/databases/write"
+  - "Microsoft.Sql/servers/databases/delete"
+  - "Microsoft.Sql/managedInstances/databases/write"
+  - "Microsoft.Sql/managedInstances/databases/delete"
   - "Microsoft.Storage/storageAccounts/write"
+  - "Microsoft.Storage/storageAccounts/delete"
+  - "Microsoft.Storage/storageAccounts/blobServices/containers/write"
+  - "Microsoft.Storage/storageAccounts/blobServices/containers/delete"
+  - "Microsoft.DocumentDB/databaseAccounts/write"
+  - "Microsoft.DocumentDB/databaseAccounts/delete"
+
+  # 3. Serverless & Deployment (Lambda / CloudFormation Equivalent)
+  - "Microsoft.Web/sites/write"
+  - "Microsoft.Web/sites/delete"
+  - "Microsoft.Web/sites/functions/write"
+  - "Microsoft.Resources/deployments/write"
+  - "Microsoft.Resources/deployments/delete"
+  - "Microsoft.Resources/deployments/validate/action"
+
+  # 4. Messaging & Backups (SQS / AWS Backup Equivalent)
+  - "Microsoft.ServiceBus/namespaces/queues/write"
+  - "Microsoft.ServiceBus/namespaces/queues/delete"
+  - "Microsoft.DataProtection/backupVaults/write"
+  - "Microsoft.DataProtection/backupVaults/delete"
+  - "Microsoft.RecoveryServices/vaults/write"
+  - "Microsoft.RecoveryServices/vaults/delete"
+  - "Microsoft.Compute/snapshots/write"
+  - "Microsoft.Compute/snapshots/delete"
+
+  # 5. Network Guardrails (Security Rules)
+  - "Microsoft.Network/networkSecurityGroups/securityRules/write"
+  - "Microsoft.Network/networkSecurityGroups/securityRules/delete"
+
 notActions:
-  - "*/delete"
+  # Prevents self-escalation or modifying core VNET architecture
+  - "Microsoft.Network/virtualNetworks/*"
+  - "Microsoft.Authorization/roleAssignments/write"
+  - "Microsoft.Authorization/roleDefinitions/write"
+
+assignableScopes:
+  - "/subscriptions/${var.subscription_id}"

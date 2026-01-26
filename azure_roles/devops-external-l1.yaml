@@ -1,13 +1,32 @@
-# azure_roles/devops-ext-l2.yaml (Junior External - Ops Only)
-name: "DevOps-External-L2"
-description: "Operational access: Start, Stop, and Monitoring only"
+# --- EXTERNAL L1 (SENIOR) AZURE ROLE DEFINITION ---
+# Focus: Full configuration and scaling rights.
+# Safety: Explicitly forbids deletion of any resources.
+
+name: "DevOps-External-L1"
+description: "Senior External Contractor: Full configuration rights excluding deletion."
+
 actions:
+  # Compute & Scaling
   - "Microsoft.Compute/virtualMachines/read"
+  - "Microsoft.Compute/virtualMachines/write"
   - "Microsoft.Compute/virtualMachines/start/action"
-  - "Microsoft.Compute/virtualMachines/stop/action"
+  - "Microsoft.Compute/virtualMachines/restart/action"
+
+  # Serverless & Containers
   - "Microsoft.App/containerApps/read"
+  - "Microsoft.App/containerApps/write"
+
+  # API Management
+  - "Microsoft.ApiManagement/service/read"
+  - "Microsoft.ApiManagement/service/write"
+
+  # Storage
   - "Microsoft.Storage/storageAccounts/read"
-  - "Microsoft.Insights/alertRules/*"
+  - "Microsoft.Storage/storageAccounts/write"
+
 notActions:
-  - "*/write"
+  # The "Safe Delete" guardrail
   - "*/delete"
+
+assignableScopes:
+  - "/subscriptions/${var.subscription_id}"
