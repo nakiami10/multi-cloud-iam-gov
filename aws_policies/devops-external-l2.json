@@ -27,21 +27,6 @@
       "Resource": "*"
     },
     {
-      "Sid": "RDSManagement",
-      "Effect": "Allow",
-      "Action": [
-        "rds:CreateDBInstance",
-        "rds:DeleteDBInstance",
-        "rds:ModifyDBInstance",
-        "rds:DescribeDBInstances",
-        "rds:RebootDBInstance",
-        "rds:CreateDBSnapshot",
-        "rds:DescribeDBSnapshots",
-        "rds:ModifyDBSubnetGroup"
-      ],
-      "Resource": "*"
-    },
-    {
       "Sid": "RDSManagementNoDelete",
       "Effect": "Allow",
       "Action": [
@@ -54,6 +39,67 @@
       "Resource": "arn:aws:rds:*:*:db:*"
     },
     {
+      "Sid": "LambdaManagement",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:DeleteFunction",
+        "lambda:InvokeFunction",
+        "lambda:GetFunction",
+        "lambda:ListFunctions",
+        "lambda:PublishVersion",
+        "lambda:AddPermission"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularCloudFormation",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:UpdateStack",
+        "cloudformation:DescribeStacks",
+        "cloudformation:GetTemplate",
+        "cloudformation:ValidateTemplate"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularELBAndAutoScaling",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:CreateLoadBalancer",
+        "elasticloadbalancing:DeleteLoadBalancer",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:ModifyLoadBalancerAttributes",
+        "elasticloadbalancing:CreateTargetGroup",
+        "elasticloadbalancing:RegisterTargets",
+        "autoscaling:CreateAutoScalingGroup",
+        "autoscaling:UpdateAutoScalingGroup",
+        "autoscaling:DeleteAutoScalingGroup",
+        "autoscaling:DescribeAutoScalingGroups"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularSQS",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:CreateQueue",
+        "sqs:DeleteQueue",
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:SetQueueAttributes",
+        "sqs:ListQueues",
+        "sqs:GetQueueUrl"
+      ],
+      "Resource": "*"
+    },
+    {
       "Sid": "S3AppStorage",
       "Effect": "Allow",
       "Action": [
@@ -63,7 +109,6 @@
         "s3:ListBucket",
         "s3:PutObject",
         "s3:GetObject",
-        "s3:DeleteObject",
         "s3:PutBucketVersioning",
         "s3:GetEncryptionConfiguration",
         "s3:PutEncryptionConfiguration",
@@ -74,10 +119,36 @@
         "s3:PutBucketTagging",
         "s3:GetBucketTagging"
       ],
-      "Resource": [
-        "arn:aws:s3:::customer-app-data",
-        "arn:aws:s3:::customer-app-data/*"
-      ]
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularBackupAndRecovery",
+      "Effect": "Allow",
+      "Action": [
+        "backup:CreateBackupPlan",
+        "backup:CreateBackupSelection",
+        "backup:CreateBackupVault",
+        "backup:StartBackupJob",
+        "backup:StartRestoreJob",
+        "backup:GetBackupPlan",
+        "backup:ListBackupPlans",
+        "backup:DescribeBackupVault",
+        "backup:ListRecoveryPointsByBackupVault",
+        "ec2:CreateSnapshot",
+        "ec2:CreateSnapshots",
+        "ec2:DeleteSnapshot",
+        "ec2:DescribeSnapshots",
+        "ec2:CopySnapshot",
+        "rds:CopyDBSnapshot",
+        "rds:DeleteDBSnapshot",
+        "rds:RestoreDBInstanceFromDBSnapshot",
+        "dynamodb:CreateBackup",
+        "dynamodb:DeleteBackup",
+        "dynamodb:DescribeBackup",
+        "dynamodb:ListBackups",
+        "dynamodb:RestoreTableFromBackup"
+      ],
+      "Resource": "*"
     },
     {
       "Sid": "MFAProtectedDelete",
@@ -86,7 +157,9 @@
         "ec2:TerminateInstances",
         "rds:DeleteDBInstance",
         "s3:DeleteObject",
-        "lambda:DeleteFunction"
+        "s3:DeleteBucket",
+        "lambda:DeleteFunction",
+        "cloudformation:DeleteStack"
       ],
       "Resource": "*",
       "Condition": {
