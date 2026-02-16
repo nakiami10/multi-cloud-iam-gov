@@ -2,6 +2,7 @@
   "Statement": [
     {
       "Sid": "EC2ManagementNoDelete",
+      "Description": "Allows management of EC2 instances and related resources, but restricts deletion of instances to prevent accidental loss of critical infrastructure.",
       "Effect": "Allow",
       "Action": [
         "ec2:RunInstances",
@@ -22,12 +23,15 @@
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:CreateRoute",
         "ec2:CreateInternetGateway",
-        "ec2:AttachInternetGateway"
+        "ec2:AttachInternetGateway",
+        "compute-optimizer:GetEC2RecommendationProjectedMetrics",
+        "compute-optimizer:GetEC2RecommendationSummaries"
       ],
       "Resource": "*"
     },
     {
       "Sid": "RDSManagementNoDelete",
+      "Description": "Allows management of RDS instances and related resources, but restricts deletion of instances to prevent accidental loss of critical databases.",
       "Effect": "Allow",
       "Action": [
         "rds:ModifyDBInstance",
@@ -100,6 +104,51 @@
       "Resource": "*"
     },
     {
+      "Sid": "GranularSNS",
+      "Effect": "Allow",
+      "Action": [
+        "sns:CreateTopic",
+        "sns:DeleteTopic",
+        "sns:Subscribe",
+        "sns:Unsubscribe",
+        "sns:Publish",
+        "sns:GetTopicAttributes",
+        "sns:SetTopicAttributes",
+        "sns:ListTopics"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularApiGateway",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:POST",
+        "apigateway:GET",
+        "apigateway:PUT",
+        "apigateway:DELETE",
+        "apigateway:PATCH",
+        "apigateway:HEAD",
+        "apigateway:OPTIONS",
+        "apigateway:CreateRestApi",
+        "apigateway:DeleteRestApi",
+        "apigateway:UpdateRestApi",
+        "apigateway:GetRestApi",
+        "apigateway:CreateResource",
+        "apigateway:DeleteResource",
+        "apigateway:UpdateResource",
+        "apigateway:GetResource",
+        "apigateway:CreateMethod",
+        "apigateway:DeleteMethod",
+        "apigateway:UpdateMethod",
+        "apigateway:GetMethod",
+        "apigateway:CreateDeployment",
+        "apigateway:DeleteDeployment",
+        "apigateway:UpdateDeployment",
+        "apigateway:GetDeployment"
+      ],
+      "Resource": "*"
+    },
+    {
       "Sid": "S3AppStorage",
       "Effect": "Allow",
       "Action": [
@@ -167,6 +216,89 @@
           "aws:MultiFactorAuthPresent": "true"
         }
       }
+    },
+    {
+      "Sid": "GranularKMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:DescribeKey",
+        "kms:EnableKey",
+        "kms:DisableKey",
+        "kms:ScheduleKeyDeletion",
+        "kms:CancelKeyDeletion",
+        "kms:ListKeys",
+        "kms:ListAliases",
+        "kms:CreateAlias",
+        "kms:DeleteAlias",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:TagResource",
+        "kms:UntagResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularSecretsManager",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CreateSecret",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:UpdateSecret",
+        "secretsmanager:ListSecrets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GranularBackupAndRecovery",
+      "Effect": "Allow",
+      "Action": [
+        "backup:CreateBackupPlan",
+        "backup:CreateBackupSelection",
+        "backup:CreateBackupVault",
+        "backup:StartBackupJob",
+        "backup:StartRestoreJob",
+        "backup:GetBackupPlan",
+        "backup:ListBackupPlans",
+        "backup:DescribeBackupVault",
+        "backup:ListRecoveryPointsByBackupVault",
+        "ec2:CreateSnapshot",
+        "ec2:CreateSnapshots",
+        "ec2:DeleteSnapshot",
+        "ec2:DescribeSnapshots",
+        "ec2:CopySnapshot",
+        "rds:CopyDBSnapshot",
+        "rds:DeleteDBSnapshot",
+        "rds:RestoreDBInstanceFromDBSnapshot",
+        "dynamodb:CreateBackup",
+        "dynamodb:DeleteBackup",
+        "dynamodb:DescribeBackup",
+        "dynamodb:ListBackups",
+        "dynamodb:RestoreTableFromBackup"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CloudWatchAppInsights",
+      "Effect": "Allow",
+      "Action": [
+        "applicationinsights:*",
+        "pi:*",
+        "health:*",
+        "cloudtrail:List*",
+        "cloudtrail:Describe*",
+        "cloudtrail:Get*",
+        "cloudtrail:Lookup*",
+        "cloudtrail:AddTags",
+        "cloudtrail:Start*",
+        "cloudtrail:Search*",
+        "cloudtrail:Generate*"
+      ],
+      "Resource": "*"
     }
   ]
 }

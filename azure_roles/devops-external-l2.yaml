@@ -22,6 +22,12 @@ actions:
   - "Microsoft.Sql/servers/databases/delete"
   - "Microsoft.Sql/managedInstances/databases/write"
   - "Microsoft.Sql/managedInstances/databases/delete"
+  - "Microsoft.DBforMySQL/servers/write"
+  - "Microsoft.DBforMySQL/servers/delete"
+  - "Microsoft.DBforPostgreSQL/servers/write"
+  - "Microsoft.DBforPostgreSQL/servers/delete"
+  - "Microsoft.DBforMariaDB/servers/write"
+  - "Microsoft.DBforMariaDB/servers/delete"
   - "Microsoft.Storage/storageAccounts/write"
   - "Microsoft.Storage/storageAccounts/delete"
   - "Microsoft.Storage/storageAccounts/blobServices/containers/write"
@@ -29,15 +35,16 @@ actions:
   - "Microsoft.DocumentDB/databaseAccounts/write"
   - "Microsoft.DocumentDB/databaseAccounts/delete"
 
-  # 3. Serverless & Deployment (Lambda / CloudFormation Equivalent)
+  # 3. Serverless, APIM & Deployment (Lambda / APIM / CloudFormation Equivalent)
   - "Microsoft.Web/sites/write"
   - "Microsoft.Web/sites/delete"
   - "Microsoft.Web/sites/functions/write"
+  - "Microsoft.ApiManagement/service/*"
   - "Microsoft.Resources/deployments/write"
   - "Microsoft.Resources/deployments/delete"
   - "Microsoft.Resources/deployments/validate/action"
 
-  # 4. Messaging & Backups (SQS / AWS Backup Equivalent)
+  # 4. Messaging, Backups & Maintenance (SQS / AWS Backup / Maintenance Equivalent)
   - "Microsoft.ServiceBus/namespaces/queues/write"
   - "Microsoft.ServiceBus/namespaces/queues/delete"
   - "Microsoft.DataProtection/backupVaults/write"
@@ -46,6 +53,8 @@ actions:
   - "Microsoft.RecoveryServices/vaults/delete"
   - "Microsoft.Compute/snapshots/write"
   - "Microsoft.Compute/snapshots/delete"
+  - "Microsoft.Maintenance/maintenanceConfigurations/*"
+  - "Microsoft.Maintenance/applyUpdates/*"
 
   # 5. Network Guardrails (Security Rules)
   - "Microsoft.Network/networkSecurityGroups/securityRules/write"

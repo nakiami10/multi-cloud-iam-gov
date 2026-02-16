@@ -6,7 +6,8 @@
       "Action": [
         "ec2:StartInstances",
         "ec2:StopInstances",
-        "ec2:DescribeInstances"
+        "ec2:DescribeInstances",
+        "ec2-ec2-instance-connect:SendSSHPublicKey"
       ],
       "Resource": "*"
     },
