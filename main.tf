@@ -99,7 +99,7 @@ resource "azurerm_role_definition" "teams" {
   }
   
   name  = "Custom-${each.value.name}"
-  scope = "/subscriptions/${var.prod_subscription_ids[0]}"
+  scope = "/subscriptions/${local.all_azure_subs[0]}"
 
   permissions {
     actions     = each.value.actions
@@ -117,7 +117,7 @@ resource "azurerm_role_assignment" "prod_strict" {
   }
 
   scope              = "/subscriptions/${each.value.subscription_id}"
-  role_definition_id = azurerm_role_definition.teams[each.value.team].role_definition_resource_id
+  role_definition_id = azurerm_role_definition.teams[each.value.team].id
   principal_id       = each.value.principal_id
 }
 

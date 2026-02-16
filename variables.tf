@@ -67,3 +67,42 @@ variable "team_assignments" {
     }
   }
 }
+
+# --- AZURE TEAM ASSIGNMENTS ---
+variable "azure_team_assignments" {
+  description = "Azure-specific team assignments mapping a team to role definition names and explicit scopes.\nPrincipals are provided via `azure_team_principals` and this map controls which roles/scopes are assigned."
+  type = map(object({
+    role_definition_names = list(string)
+    scopes                = list(string)
+  }))
+  default = {
+    "dev-team" = {
+      role_definition_names = ["Contributor"]
+      scopes                = []
+    }
+    "devops-internal" = {
+      role_definition_names = ["Owner"]
+      scopes                = []
+    }
+    "devops-ext-l1" = {
+      role_definition_names = ["Contributor"]
+      scopes                = []
+    }
+    "devops-ext-l2" = {
+      role_definition_names = ["Contributor"]
+      scopes                = []
+    }
+    "sre-team" = {
+      role_definition_names = ["Monitoring Contributor"]
+      scopes                = []
+    }
+    "shared-rbac" = {
+      role_definition_names = ["Reader"]
+      scopes                = []
+    }
+    "cicd-service-account" = {
+      role_definition_names = ["Contributor"]
+      scopes                = []
+    }
+  }
+}
