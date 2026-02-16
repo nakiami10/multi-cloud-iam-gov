@@ -95,6 +95,16 @@ actions:
   - "Microsoft.Maintenance/maintenanceConfigurations/read"
   - "Microsoft.Maintenance/maintenanceConfigurations/write"
   - "Microsoft.Maintenance/applyUpdates/write"
+  - "Microsoft.Authorization/policyDefinitions/read"
+  - "Microsoft.Authorization/policyDefinitions/write"
+  - "Microsoft.Authorization/policyAssignments/read"
+  - "Microsoft.Authorization/policyAssignments/write"
+  - "Microsoft.Authorization/roleAssignments/read"
+  - "Microsoft.Authorization/roleAssignments/write"
+  - "Microsoft.KeyVault/vaults/secrets/get"
+  - "Microsoft.KeyVault/vaults/read"
+  - "Microsoft.Compute/virtualMachines/read"
+  - "Microsoft.Compute/virtualMachines/extensions/read"
 
   # 7. Insights & Governance
   - "Microsoft.Insights/components/read"

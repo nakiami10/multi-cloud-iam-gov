@@ -171,6 +171,34 @@
       "Resource": "*"
     },
     {
+      "Sid": "GranularSSMControlForMonitoringAndPatching",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:CreateAssociation",
+        "ssm:UpdateAssociation",
+        "ssm:DeleteAssociation",
+        "ssm:DescribeAssociation",
+        "ssm:GetAssociation",
+        "ssm:ListAssociations",
+        "ssm:ListInstanceAssociations",
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetDocument",
+        "ssm:ListDocuments",
+        "ssm:DescribeInstanceAssociations",
+        "ssm:GetParameters",
+        "ssm:UpdateInstanceInformation",
+        "ssm:GetDeployablePatchSnapshotForInstance",
+        "ssm:PutInventory",
+        "ssm:PutComplianceItems",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel",
+        "ec2messages:AcknowledgeMessage",
+        "ec2messages:SendReply"
+      ]
+    },
+    {
       "Sid": "GranularBackupAndRecovery",
       "Effect": "Allow",
       "Action": [
