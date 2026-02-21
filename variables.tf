@@ -42,7 +42,7 @@ variable "team_assignments" {
   }))
   default = {
     "devops-internal" = {
-      iam_users  = ["Khirmer.Dia"]
+      iam_users  = ["platform-admin-01"]
       iam_groups = ["Admins"]
     }
     "devops-ext-l1" = {

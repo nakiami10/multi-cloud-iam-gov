@@ -1,180 +1,70 @@
 # Multi-Cloud IAM Governance Framework
 
-This repository serves as the centralized **Source of Truth** for managing infrastructure access across **AWS** and **Azure** environments. It uses a **modular, capability-based architecture** to balance developer velocity with strict security compliance.
+Multi-cloud IAM as code for AWS + Azure, with composable role baselines, shared guardrails, environment-aware strictness, and CI/CD-safe deployment.
 
----
+## Why this project
 
-## 1. Core Philosophy: _Composition over Copy-Paste_
+Most IAM programs fail by either becoming too restrictive (teams blocked) or too broad (security drift). This project aims for a middle path:
 
-Instead of managing massive, redundant policy files for every team, this repository uses a **Composition Engine**.
+- **Composable permissions** (shared components + team overlays)
+- **Tiered role model** (junior/senior/internal + SRE/dev/CI)
+- **Guardrails by default** (explicit deny + MFA-gated deletes)
+- **Policy-as-code workflows** (reviewable via Terraform plan/apply)
 
-### Foundation (Shared Components)
+## What it manages
 
-- A library of **safe, baseline permissions** required by everyone
-- Examples:
-  - Monitoring
-  - Discovery
-  - Support
+- **AWS**: IAM policies under `aws_policies/` with component inheritance from `aws_policies/components/`
+- **Azure**: Custom role definitions under `azure_roles/` with component inheritance from `azure_roles/components/`
+- **Orchestration**: Terraform composition engine in `main.tf`
 
-### Baselines (Team-Specific)
+## Role philosophy
 
-- Each team has a **dedicated file** containing _only_ the permissions unique to their role or function.
+- **DevOps External L1 (Junior)**: triage and safe runtime ops
+- **DevOps External L2 (Senior)**: broader provisioning and operations, destructive operations gated by MFA
+- **DevOps Internal**: broad lifecycle ownership with selective hard-deny guardrails for catastrophic actions
+- **SRE Team**: observability + incident remediation
+- **Dev Team**: app-scoped build/deploy permissions
+- **CI/CD Service Account**: deployment automation with strict pass-role and identity guardrails
 
-### Orchestration
+## Security model
 
-- Deployment logic automatically **stitches shared foundations into team baselines**
-- A single edit to a shared component (e.g., new auditing requirement) propagates instantly to **all teams**
-- Eliminates duplication and reduces policy drift
+- Explicit deny for identity-boundary changes where needed
+- MFA-conditional deletes for human-operated roles
+- Hard deny for critical data/crypto destruction in higher-risk contexts
+- Environment-aware strictness through Terraform variables
 
----
+## Quick start
 
-## 2. Team Hierarchy & Access Levels
+1. Configure `global.tfvars` for environment and subscription mapping.
+2. Review role files in `aws_policies/` and `azure_roles/`.
+3. Run:
+   - `terraform init`
+   - `terraform validate`
+   - `terraform plan -var-file=global.tfvars`
 
-The framework uses an **Additive Inheritance Model** to enforce separation of duties while minimizing maintenance overhead.
+## CI/CD execution model (recommended)
 
-### Internal DevOps (The Authority)
+Use GitHub Actions + OIDC federation (no root credentials for routine operations).
 
-- **Clearance:** Full lifecycle management
-- **Logic:** Bypasses shared constraints
-- **Scope:**
-  - Identity
-  - Network
-  - Compute
+- Workflow: `.github/workflows/terraform-iam.yml`
+- PR: `terraform plan`
+- Main merge: `terraform apply` via protected environment
 
----
+Required GitHub secrets:
 
-### Level 2: Senior Contractor (Elevated Ops)
+- `AWS_TERRAFORM_ROLE_ARN`
+- `AZURE_CLIENT_ID`
+- `AZURE_TENANT_ID`
+- `AZURE_SUBSCRIPTION_ID`
 
-- **Inheritance:** Includes all Level 1 (Junior) capabilities
-- **Leeway:**
-  - Scaling resources
-  - Modifying configurations (e.g., database instance sizes)
-- **Safety Catch:**
-  - Destructive actions are allowed
-  - **Strictly gated by MFA**
+## Project docs
 
----
+- Architecture: `docs/ARCHITECTURE.md`
+- Roadmap: `docs/ROADMAP.md`
+- First release checklist: `docs/RELEASE_CHECKLIST.md`
 
-### Level 1: Junior Contractor (Triage & Ops)
+## Intended audience
 
-- **Clearance:** Operational triage only
-- **Restrictions:**
-  - Read
-  - Start
-  - Stop
-- **No:**
-  - Creation
-  - Deletion
-- **Guardrails:**
-  - Access limited to resources explicitly tagged for their clearance level
-
----
-
-### SRE & Developer Teams
-
-#### SRE
-
-- Observability
-- Alerting
-- Maintenance windows
-
-#### Developers
-
-- Scoped to **application-specific resources**
-- Examples:
-  - S3 buckets
-  - Container App namespaces
-
----
-
-## 3. Security & Governance Guardrails
-
-### No-Wildcard Mandate
-
-- Avoids `*` permissions to minimize blast radius
-- Every action is **explicitly defined**
-  - Example: `ec2:RunInstances` instead of `ec2:*`
-
----
-
-### Tag-Based Access Control (TBAC/ Tentative Implementation)
-
-- External contractor permissions are **pinned to resource tags**
-- Even with stop permissions, actions are denied unless the resource carries the correct **Clearance tag**
-
----
-
-### Safe-Delete Enforcement (Azure)
-
-- Junior roles use `notActions` blocks
-- Prevents deletion even if broad roles (e.g., `Contributor`) are assigned in non-production environments
-
----
-
-### MFA-Protected Destruction (AWS)
-
-- Policies include conditions requiring a **recent MFA token**
-- Destructive actions without MFA are automatically rejected by the cloud provider
-
----
-
-## 4. Environment Awareness
-
-The framework distinguishes between **Production** and **Non-Production** environments.
-
-### Production
-
-- Strict adherence to **granular custom roles**
-- No elevated shortcuts
-
-### Non-Production
-
-- Allows controlled **leeway**
-- Developers can:
-  - Experiment
-  - Delete resources to manage costs
-- No need for production-grade policy updates
-
----
-
-## 5. Maintenance Workflow
-
-### Global Updates
-
-- Edit shared components
-- Changes propagate to all teams automatically
-
-### Team Updates
-
-- Modify team-specific files:
-  - JSON (AWS)
-  - YAML (Azure)
-
-### Verification
-
-- All changes must be validated via **Terraform Plan**
-- Plan output shows the final **composed permissions** before application
-
----
-
-**Result:**  
-A scalable, auditable, and secure IAM framework that enforces least privilege _without slowing teams down_.
-
-##
-
-│
-├── main.tf # Main Orchestrator
-├── providers.tf # AWS & Azure provider config
-│
-├── /aws_policies
-│ ├── devops-internal.json # Full Admin (Internal)
-│ ├── devops-ext-l1.json # Senior Contractor (No Delete)
-│ ├── devops-ext-l2.json # Junior Contractor (Ops Only)
-│ ├── sre-team.json # Observability & Metrics
-│ └── dev-team.json # Application Devs
-│
-└── /azure_roles
-├── devops-internal.yaml # Full Owner (Internal)
-├── devops-ext-l1.yaml # Contributor (No Delete)
-├── devops-ext-l2.yaml # Reader + Ops (No Delete)
-└── sre-team.yaml # Insights & Maintenance
+- Platform/security engineers building IAM guardrails as code
+- Teams standardizing access patterns across cloud providers
+- Organizations that need auditable least-privilege with operational practicality

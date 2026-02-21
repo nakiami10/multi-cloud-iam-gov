@@ -14,7 +14,7 @@ terraform {
   
   /*
   backend "s3" {
-    bucket         = "customer-terraform-state-prod"
+    bucket         = "org-terraform-state-prod"
     key            = "iam-governance/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
@@ -28,7 +28,7 @@ terraform {
   
   backend "azurerm" {
     resource_group_name  = "rg-governance-prod"
-    storage_account_name = "stcustomertfstateprod"
+    storage_account_name = "stiamgovernanceprod"
     container_name       = "tfstate"
     key                  = "iam.terraform.tfstate"
   }
@@ -45,7 +45,7 @@ locals {
     jsondecode(file("${path.module}/aws_policies/components/${f}")).Statement
   ])
   
-  aws_l1_raw = jsondecode(file("${path.module}/aws_policies/devops-ext-l1.json")).Statement
+  aws_l1_raw = jsondecode(file("${path.module}/aws_policies/devops-external-l1.json")).Statement
   aws_team_files = fileset("${path.module}/aws_policies", "*.json")
   
   # Logic: If var.enable_strict_governance is false (Non-Prod), 
@@ -75,7 +75,7 @@ locals {
 resource "aws_iam_policy" "composed" {
   for_each = local.aws_final_policies
   name     = "iam-composed-${each.key}-${var.environment}"
-  path     = "/customer-managed/"
+  path     = "/org-managed/"
   policy   = jsonencode(each.value)
 }
 
@@ -83,6 +83,41 @@ resource "aws_iam_policy" "composed" {
 
 locals {
   az_role_files = fileset("${path.module}/azure_roles", "*.yaml")
+  az_component_files = fileset("${path.module}/azure_roles/components", "*.yaml")
+
+  az_component_actions = distinct(flatten([
+    for f in local.az_component_files :
+    lookup(yamldecode(file("${path.module}/azure_roles/components/${f}")), "actions", [])
+  ]))
+
+  az_component_not_actions = distinct(flatten([
+    for f in local.az_component_files :
+    lookup(yamldecode(file("${path.module}/azure_roles/components/${f}")), "notActions", [])
+  ]))
+
+  az_roles_raw = {
+    for f in local.az_role_files :
+    replace(f, ".yaml", "") => yamldecode(file("${path.module}/azure_roles/${f}"))
+  }
+
+  az_l1_actions = lookup(local.az_roles_raw["devops-external-l1"], "actions", [])
+  az_l1_not_actions = lookup(local.az_roles_raw["devops-external-l1"], "notActions", [])
+
+  az_roles_composed = {
+    for role_key, role in local.az_roles_raw :
+    role_key => merge(role, {
+      actions = distinct(concat(
+        local.az_component_actions,
+        role_key == "devops-external-l2" ? local.az_l1_actions : [],
+        lookup(role, "actions", [])
+      ))
+      notActions = distinct(concat(
+        local.az_component_not_actions,
+        role_key == "devops-external-l2" ? local.az_l1_not_actions : [],
+        lookup(role, "notActions", [])
+      ))
+    })
+  }
   
   # Multi-line concat for all assignable scopes
   all_azure_subs = concat(
@@ -93,10 +128,7 @@ locals {
 
 # 3a. Create Custom Role Definitions (Strict)
 resource "azurerm_role_definition" "teams" {
-  for_each = { 
-    for f in local.az_role_files : 
-    replace(f, ".yaml", "") => yamldecode(file("${path.module}/azure_roles/${f}")) 
-  }
+  for_each = local.az_roles_composed
   
   name  = "Custom-${each.value.name}"
   scope = "/subscriptions/${local.all_azure_subs[0]}"

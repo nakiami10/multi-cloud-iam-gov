@@ -5,7 +5,8 @@
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": [
-        "arn:aws:iam::*:role/app-execution-role-*",
+        "arn:aws:iam::*:role/app-lambda-execution-role-*",
+        "arn:aws:iam::*:role/app-ec2-execution-role-*",
         "arn:aws:iam::*:role/logging-standard-role"
       ],
       "Condition": {

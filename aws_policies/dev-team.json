@@ -2,21 +2,130 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "DevS3Access",
+      "Sid": "DevStorageAccess",
       "Effect": "Allow",
-      "Action": ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
-      "Resource": ["arn:aws:s3:::dev-assets/*"]
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:AbortMultipartUpload"
+      ],
+      "Resource": ["arn:aws:s3:::dev-assets", "arn:aws:s3:::dev-assets/*"]
     },
     {
-      "Sid": "DevRDSAccess",
+      "Sid": "DevBuildDeployAccess",
       "Effect": "Allow",
-      "Action": ["rds:DescribeDBInstances", "rds:RebootDBInstance"],
+      "Action": [
+        "lambda:Create*",
+        "lambda:Update*",
+        "lambda:Get*",
+        "lambda:List*",
+        "lambda:InvokeFunction",
+        "lambda:PublishVersion",
+        "cloudformation:Create*",
+        "cloudformation:Update*",
+        "cloudformation:Describe*",
+        "cloudformation:Get*",
+        "cloudformation:List*",
+        "cloudformation:ValidateTemplate",
+        "cloudformation:ExecuteChangeSet",
+        "logs:Create*",
+        "logs:Put*",
+        "logs:Get*",
+        "logs:Describe*",
+        "logs:FilterLogEvents",
+        "events:PutRule",
+        "events:PutTargets",
+        "events:DescribeRule",
+        "events:List*",
+        "events:RemoveTargets",
+        "apigateway:GET",
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:PATCH",
+        "apigateway:HEAD",
+        "apigateway:OPTIONS",
+        "sqs:CreateQueue",
+        "sqs:Get*",
+        "sqs:Set*",
+        "sqs:List*",
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sns:CreateTopic",
+        "sns:Get*",
+        "sns:List*",
+        "sns:Set*",
+        "sns:Publish",
+        "sns:Subscribe",
+        "sns:Unsubscribe",
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:GetParametersByPath",
+        "rds:Describe*",
+        "rds:List*",
+        "rds:RebootDBInstance"
+      ],
       "Resource": "*",
       "Condition": {
         "StringNotEquals": {
           "aws:ResourceTag/EnvironmentName": "prod"
         }
       }
+    },
+    {
+      "Sid": "AllowMFAProtectedOperationalDeletes",
+      "Effect": "Allow",
+      "Action": ["events:DeleteRule"],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyOperationalDeletesWithoutMFA",
+      "Effect": "Deny",
+      "Action": ["events:DeleteRule"],
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDestructiveActions",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:TerminateInstances",
+        "rds:Delete*",
+        "s3:DeleteBucket",
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion",
+        "lambda:DeleteFunction",
+        "cloudformation:DeleteStack",
+        "kms:ScheduleKeyDeletion",
+        "kms:DisableKey",
+        "secretsmanager:DeleteSecret"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyIamMutations",
+      "Effect": "Deny",
+      "Action": [
+        "iam:Create*",
+        "iam:Delete*",
+        "iam:Update*",
+        "iam:Attach*",
+        "iam:Detach*",
+        "iam:Put*",
+        "iam:PassRole",
+        "iam:SetDefaultPolicyVersion"
+      ],
+      "Resource": "*"
     }
   ]
 }

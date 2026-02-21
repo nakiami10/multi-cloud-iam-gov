@@ -1,0 +1,52 @@
+# Copy this file to global.tfvars and fill in your values.
+
+environment = "prod"
+enable_strict_governance = true
+
+prod_subscription_ids = [
+  "00000000-0000-0000-0000-000000000000"
+]
+
+nonprod_subscription_ids = [
+  "11111111-1111-1111-1111-111111111111"
+]
+
+azure_team_principals = [
+  {
+    team            = "devops-internal"
+    subscription_id = "00000000-0000-0000-0000-000000000000"
+    principal_id    = "22222222-2222-2222-2222-222222222222"
+  },
+  {
+    team            = "sre-team"
+    subscription_id = "00000000-0000-0000-0000-000000000000"
+    principal_id    = "33333333-3333-3333-3333-333333333333"
+  }
+]
+
+team_assignments = {
+  devops-internal = {
+    iam_users  = ["internal-admin-01"]
+    iam_groups = ["Admins"]
+  }
+  devops-ext-l1 = {
+    iam_users  = ["contractor-junior-01"]
+    iam_groups = ["External-L1"]
+  }
+  devops-ext-l2 = {
+    iam_users  = ["contractor-senior-01"]
+    iam_groups = ["External-L2"]
+  }
+  sre-team = {
+    iam_users  = ["sre-lead-01"]
+    iam_groups = ["SRE-Team"]
+  }
+  dev-team = {
+    iam_users  = []
+    iam_groups = ["Developers"]
+  }
+  cicd-service-account = {
+    iam_users  = ["cicd-pipeline-user"]
+    iam_groups = ["ServiceAccounts"]
+  }
+}

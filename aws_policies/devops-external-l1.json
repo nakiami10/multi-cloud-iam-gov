@@ -1,34 +1,94 @@
 {
+  "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "OperationalOnlyStartStop",
+      "Sid": "OperationalComputeAccess",
       "Effect": "Allow",
       "Action": [
+        "ec2:Describe*",
         "ec2:StartInstances",
         "ec2:StopInstances",
-        "ec2:DescribeInstances",
-        "ec2-ec2-instance-connect:SendSSHPublicKey"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "SSMRemoteCommand",
-      "Effect": "Allow",
-      "Action": [
+        "ec2:RebootInstances",
+        "ec2-instance-connect:SendSSHPublicKey",
         "ssm:SendCommand",
         "ssm:ListCommands",
-        "ssm:GetCommandInvocation"
+        "ssm:GetCommandInvocation",
+        "ssm:DescribeInstanceInformation",
+        "ssm:StartSession",
+        "ssm:ResumeSession",
+        "ssm:TerminateSession",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel",
+        "ec2messages:AcknowledgeMessage",
+        "ec2messages:Get*",
+        "ec2messages:SendReply"
       ],
       "Resource": "*"
     },
     {
-      "Sid": "S3ReadOnly",
+      "Sid": "ObservabilityReadOnly",
       "Effect": "Allow",
-      "Action": ["s3:GetObject", "s3:ListBucket"],
+      "Action": [
+        "cloudwatch:GetMetricData",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:ListMetrics",
+        "logs:Describe*",
+        "logs:Get*",
+        "logs:FilterLogEvents",
+        "autoscaling:Describe*",
+        "elasticloadbalancing:Describe*",
+        "rds:Describe*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "S3AppDataLimitedAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:AbortMultipartUpload"
+      ],
       "Resource": [
-        "arn:aws:s3:::customer-app-data",
-        "arn:aws:s3:::customer-app-data/*"
+        "arn:aws:s3:::app-data-example",
+        "arn:aws:s3:::app-data-example/*"
       ]
+    },
+    {
+      "Sid": "DenyDestructiveActions",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:TerminateInstances",
+        "ec2:Delete*",
+        "rds:Delete*",
+        "s3:DeleteBucket",
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion",
+        "lambda:DeleteFunction",
+        "cloudformation:DeleteStack",
+        "kms:ScheduleKeyDeletion",
+        "kms:DisableKey",
+        "secretsmanager:DeleteSecret"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyIamPrivilegeEscalation",
+      "Effect": "Deny",
+      "Action": [
+        "iam:Create*",
+        "iam:Delete*",
+        "iam:Update*",
+        "iam:Attach*",
+        "iam:Detach*",
+        "iam:Put*",
+        "iam:SetDefaultPolicyVersion",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
     }
   ]
 }

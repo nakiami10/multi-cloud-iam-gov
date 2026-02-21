@@ -1,79 +1,62 @@
 # --- SENIOR (L2) ELEVATED ROLE DEFINITION ---
-# Focus: Full provisioning, configuration, and destruction rights.
+# Focus: Broad provisioning and configuration rights for senior contractors.
 # Compliance: Strict No-Wildcard enforcement. All actions are explicitly listed.
 # Inheritance: Inherits L1 (Junior) triage actions via the Terraform stitching engine.
 
 name: "DevOps-External-L2"
-description: "Senior Contractor: Ultra-granular explicit actions across Azure services (No Wildcards)."
+description: "Senior Contractor: Broad operational and provisioning rights with destructive and RBAC guardrails."
 
 actions:
   # 1. Compute, Networking & Optimization
   - "Microsoft.Compute/virtualMachines/read"
   - "Microsoft.Compute/virtualMachines/write"
-  - "Microsoft.Compute/virtualMachines/delete"
   - "Microsoft.Compute/virtualMachines/start/action"
   - "Microsoft.Compute/virtualMachines/restart/action"
   - "Microsoft.Compute/virtualMachines/powerOff/action"
   - "Microsoft.Compute/virtualMachineScaleSets/read"
   - "Microsoft.Compute/virtualMachineScaleSets/write"
-  - "Microsoft.Compute/virtualMachineScaleSets/delete"
   - "Microsoft.Network/loadBalancers/read"
   - "Microsoft.Network/loadBalancers/write"
-  - "Microsoft.Network/loadBalancers/delete"
   - "Microsoft.Network/networkInterfaces/read"
   - "Microsoft.Network/networkInterfaces/write"
-  - "Microsoft.Network/networkInterfaces/delete"
   - "Microsoft.Network/networkSecurityGroups/securityRules/read"
   - "Microsoft.Network/networkSecurityGroups/securityRules/write"
-  - "Microsoft.Network/networkSecurityGroups/securityRules/delete"
   - "Microsoft.Advisor/recommendations/read"
   - "Microsoft.ResourceHealth/availabilityStatuses/read"
 
   # 2. Data & Storage (SQL, OSS DBs, Storage, CosmosDB)
   - "Microsoft.Sql/servers/databases/read"
   - "Microsoft.Sql/servers/databases/write"
-  - "Microsoft.Sql/servers/databases/delete"
   - "Microsoft.Sql/managedInstances/databases/read"
   - "Microsoft.Sql/managedInstances/databases/write"
-  - "Microsoft.Sql/managedInstances/databases/delete"
   - "Microsoft.DBforMySQL/servers/read"
   - "Microsoft.DBforMySQL/servers/write"
-  - "Microsoft.DBforMySQL/servers/delete"
   - "Microsoft.DBforPostgreSQL/servers/read"
   - "Microsoft.DBforPostgreSQL/servers/write"
-  - "Microsoft.DBforPostgreSQL/servers/delete"
   - "Microsoft.Storage/storageAccounts/read"
   - "Microsoft.Storage/storageAccounts/write"
-  - "Microsoft.Storage/storageAccounts/delete"
   - "Microsoft.Storage/storageAccounts/listKeys/action"
   - "Microsoft.DocumentDB/databaseAccounts/read"
   - "Microsoft.DocumentDB/databaseAccounts/write"
-  - "Microsoft.DocumentDB/databaseAccounts/delete"
 
   # 3. Serverless, APIM & Deployment
   - "Microsoft.Web/sites/read"
   - "Microsoft.Web/sites/write"
-  - "Microsoft.Web/sites/delete"
   - "Microsoft.Web/sites/config/read"
   - "Microsoft.Web/sites/config/write"
   - "Microsoft.ApiManagement/service/read"
   - "Microsoft.ApiManagement/service/write"
-  - "Microsoft.ApiManagement/service/delete"
   - "Microsoft.Resources/deployments/read"
   - "Microsoft.Resources/deployments/write"
-  - "Microsoft.Resources/deployments/delete"
   - "Microsoft.Resources/deployments/validate/action"
 
   # 4. Messaging & Events
   - "Microsoft.ServiceBus/namespaces/queues/read"
   - "Microsoft.ServiceBus/namespaces/queues/write"
-  - "Microsoft.ServiceBus/namespaces/queues/delete"
   - "Microsoft.ServiceBus/namespaces/topics/read"
   - "Microsoft.ServiceBus/namespaces/topics/write"
-  - "Microsoft.ServiceBus/namespaces/topics/delete"
   - "Microsoft.EventGrid/topics/read"
   - "Microsoft.EventGrid/topics/write"
-  - "Microsoft.EventGrid/topics/delete"
 
   # 5. Security, Keys & Secrets
   - "Microsoft.KeyVault/vaults/read"
@@ -91,16 +74,15 @@ actions:
   - "Microsoft.RecoveryServices/vaults/write"
   - "Microsoft.Compute/snapshots/read"
   - "Microsoft.Compute/snapshots/write"
-  - "Microsoft.Compute/snapshots/delete"
   - "Microsoft.Maintenance/maintenanceConfigurations/read"
   - "Microsoft.Maintenance/maintenanceConfigurations/write"
   - "Microsoft.Maintenance/applyUpdates/write"
   - "Microsoft.Authorization/policyDefinitions/read"
-  - "Microsoft.Authorization/policyDefinitions/write"
+  - "Microsoft.Authorization/policyDefinitions/read"
   - "Microsoft.Authorization/policyAssignments/read"
-  - "Microsoft.Authorization/policyAssignments/write"
+  - "Microsoft.Authorization/policyAssignments/read"
   - "Microsoft.Authorization/roleAssignments/read"
-  - "Microsoft.Authorization/roleAssignments/write"
+  - "Microsoft.Authorization/roleAssignments/read"
   - "Microsoft.KeyVault/vaults/secrets/get"
   - "Microsoft.KeyVault/vaults/read"
   - "Microsoft.Compute/virtualMachines/read"
@@ -116,9 +98,14 @@ actions:
   - "Microsoft.Support/supportTickets/write"
 
 notActions:
+  - "*/delete"
   - "Microsoft.Network/virtualNetworks/*"
   - "Microsoft.Authorization/roleAssignments/write"
+  - "Microsoft.Authorization/roleAssignments/delete"
   - "Microsoft.Authorization/roleDefinitions/write"
+  - "Microsoft.Authorization/roleDefinitions/delete"
+  - "Microsoft.Authorization/policyAssignments/write"
+  - "Microsoft.Authorization/policyDefinitions/write"
 
 assignableScopes:
   - "/subscriptions/${var.subscription_id}"

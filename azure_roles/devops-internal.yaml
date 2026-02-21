@@ -32,4 +32,13 @@ actions:
   - "Microsoft.Resources/*"
   - "Microsoft.Authorization/*"
   - "Microsoft.Insights/*"
-notActions: []
+notActions:
+  - "Microsoft.Authorization/roleDefinitions/write"
+  - "Microsoft.Authorization/roleDefinitions/delete"
+  - "Microsoft.Storage/storageAccounts/delete"
+  - "Microsoft.Sql/servers/databases/delete"
+  - "Microsoft.DBforMySQL/servers/delete"
+  - "Microsoft.DBforPostgreSQL/servers/delete"
+  - "Microsoft.KeyVault/vaults/delete"
+  - "Microsoft.KeyVault/vaults/keys/delete"
+  - "Microsoft.KeyVault/vaults/secrets/delete"

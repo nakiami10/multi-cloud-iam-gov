@@ -2,38 +2,126 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "CloudWatchAndLogs",
+      "Sid": "ObservabilityAndAlerting",
       "Effect": "Allow",
       "Action": [
+        "cloudwatch:Describe*",
         "cloudwatch:GetMetricData",
         "cloudwatch:GetMetricStatistics",
         "cloudwatch:ListMetrics",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams",
-        "logs:GetLogEvents",
-        "logs:FilterLogEvents"
+        "cloudwatch:PutMetricAlarm",
+        "cloudwatch:EnableAlarmActions",
+        "cloudwatch:DisableAlarmActions",
+        "logs:Describe*",
+        "logs:Get*",
+        "logs:FilterLogEvents",
+        "logs:StartQuery",
+        "logs:StopQuery",
+        "logs:GetQueryResults",
+        "logs:PutRetentionPolicy",
+        "xray:Get*",
+        "xray:BatchGet*",
+        "xray:List*"
       ],
       "Resource": "*"
     },
     {
-      "Sid": "ResourceInspection",
+      "Sid": "AllowMFAProtectedOperationalDeletes",
+      "Effect": "Allow",
+      "Action": ["cloudwatch:DeleteAlarms", "logs:DeleteRetentionPolicy"],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyOperationalDeletesWithoutMFA",
+      "Effect": "Deny",
+      "Action": ["cloudwatch:DeleteAlarms", "logs:DeleteRetentionPolicy"],
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    },
+    {
+      "Sid": "OperationalInspectionAndRemediation",
       "Effect": "Allow",
       "Action": [
         "ec2:Describe*",
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "ec2:RebootInstances",
         "rds:Describe*",
+        "rds:List*",
+        "rds:StartDBInstance",
+        "rds:StopDBInstance",
+        "rds:RebootDBInstance",
         "elasticloadbalancing:Describe*",
-        "autoscaling:Describe*"
+        "elasticloadbalancing:RegisterTargets",
+        "elasticloadbalancing:DeregisterTargets",
+        "autoscaling:Describe*",
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:SuspendProcesses",
+        "autoscaling:ResumeProcesses"
       ],
       "Resource": "*"
     },
     {
-      "Sid": "MaintenanceActions",
+      "Sid": "SSMIncidentAccess",
       "Effect": "Allow",
       "Action": [
         "ssm:SendCommand",
         "ssm:GetCommandInvocation",
         "ssm:ListCommands",
-        "ssm:DescribeInstanceInformation"
+        "ssm:DescribeInstanceInformation",
+        "ssm:StartSession",
+        "ssm:ResumeSession",
+        "ssm:TerminateSession",
+        "ssm:GetConnectionStatus",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel",
+        "ec2messages:AcknowledgeMessage",
+        "ec2messages:Get*",
+        "ec2messages:SendReply"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyDestructiveChanges",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:TerminateInstances",
+        "ec2:Delete*",
+        "rds:Delete*",
+        "s3:DeleteBucket",
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion",
+        "lambda:DeleteFunction",
+        "cloudformation:DeleteStack",
+        "kms:ScheduleKeyDeletion",
+        "kms:DisableKey",
+        "secretsmanager:DeleteSecret"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyIamMutations",
+      "Effect": "Deny",
+      "Action": [
+        "iam:Create*",
+        "iam:Delete*",
+        "iam:Update*",
+        "iam:Attach*",
+        "iam:Detach*",
+        "iam:Put*",
+        "iam:PassRole",
+        "iam:SetDefaultPolicyVersion"
       ],
       "Resource": "*"
     }

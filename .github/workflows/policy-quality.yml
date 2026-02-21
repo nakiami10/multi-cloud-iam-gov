@@ -1,0 +1,33 @@
+name: Policy Quality Checks
+
+on:
+  pull_request:
+    paths:
+      - "aws_policies/**"
+      - "scripts/check_aws_policy_quality.py"
+      - ".github/workflows/policy-quality.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "aws_policies/**"
+      - "scripts/check_aws_policy_quality.py"
+      - ".github/workflows/policy-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  aws-policy-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run AWS policy quality checks
+        run: python scripts/check_aws_policy_quality.py

@@ -38,15 +38,15 @@ azure_team_principals = [
 # These mappings correspond to the JSON filenames in /aws_policies
 team_assignments = {
   "devops-internal" = {
-    iam_users  = ["Khirmer.Dia"]
+    iam_users  = ["platform-admin-01"]
     iam_groups = ["Admins"]
   }
   "devops-ext-l1" = {
-    iam_users  = ["contractor-senior-01"]
+    iam_users  = ["external-operator-l1-01"]
     iam_groups = ["External-L1"]
   }
   "devops-ext-l2" = {
-    iam_users  = ["contractor-junior-01"]
+    iam_users  = ["external-operator-l2-01"]
     iam_groups = ["External-L2"]
   }
   "sre-team" = {
@@ -58,7 +58,7 @@ team_assignments = {
     iam_groups = ["Developers"]
   }
   "cicd-service-account" = {
-    iam_users  = ["cicd-pipeline-user"]
+    iam_users  = ["cicd-bot-01"]
     iam_groups = ["ServiceAccounts"]
   }
 }

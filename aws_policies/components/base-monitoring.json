@@ -4,11 +4,9 @@
       "Sid": "StandardObservability",
       "Effect": "Allow",
       "Action": [
-        "cloudwatch:GetMetricData",
-        "cloudwatch:GetMetricStatistics",
-        "cloudwatch:ListMetrics",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams",
+        "cloudwatch:Get*",
+        "cloudwatch:List*",
+        "logs:Describe*",
         "logs:GetLogEvents",
         "logs:FilterLogEvents"
       ],
